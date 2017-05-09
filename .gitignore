@@ -1,0 +1,21 @@
+*.sublime*
+.DS_Store
+
+# dotenv
+.env
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# config file
+config.py
+
+# file folders
+input_csv_files/*
+output_results/*
+
+# keep folder, not contents
+!input_csv_files/.gitkeep
+!output_results/.gitkeep
