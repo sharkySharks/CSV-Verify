@@ -1,8 +1,10 @@
 import csv
-import requests
-import config
-import os
 from http import HTTPStatus
+import os
+
+import requests
+
+import config
 
 """
 Validate CSV File Data Against API Response
@@ -36,7 +38,7 @@ def is_correct_value(response, csv_data_to_verify):
     if response_data == csv_data_to_verify:
         return True
     else:
-        return "Error: Incorrect value returned: {}".format(response_account_tier)
+        return "Error: Incorrect value returned: {}".format(response_data)
 
 
 def verify(response, account_info):
@@ -68,7 +70,7 @@ def verify(response, account_info):
             return result
 
 
-def verify_tiers(input_csv_file, output_csv_file):
+def verify_tiers(input_csv_file, output_csv_file, environment):
     """
     Validate data from CSV file
     :param: input_csv_file - csv file to be tested
@@ -80,23 +82,26 @@ def verify_tiers(input_csv_file, output_csv_file):
     with open(input_file_path, "r") as file:
         reader = csv.reader(file, dialect="excel")
         for i, line in enumerate(reader, start=1):
-            """Line read from CSV file"""
+            line = line[0].split('\t')
+
+            # Line read from CSV file
             print("Line [{}] : {}".format(i, line))
 
             account_info = {
                 "csv_account_number": line[0],
                 "csv_data_to_verify": line[1],
-                "csv_account_type": line[2].lower(),
+                "csv_account_type": "managed_hosting" if line[2].lower() == "dedicated" else line[2].lower(),
                 "csv_file_name": line[3]
             }
 
-            """Make API call with each row's account information"""
-            response = config.API_CALL(account_info["csv_account_number"], account_info["csv_account_type"])
+            # Make API call with each row's account information
+            response = config.API_CALL(account_info["csv_account_number"],
+                                       account_info["csv_account_type"], environment)
 
-            """Validate"""
+            # Validate
             result = verify(response, account_info)
 
-            """Create new result row, append outcome of verify result above"""
+            # Create new result row, append outcome of verify result above
             RESULT_ROW = [
                 account_info["csv_account_number"],
                 account_info["csv_data_to_verify"],
@@ -106,10 +111,10 @@ def verify_tiers(input_csv_file, output_csv_file):
 
             RESULT_ROW.append(result)
 
-            """Result Row"""
+            # Result Row
             print("result row: {}".format(RESULT_ROW))
 
-            """Write row result to output_results/<output.csv>"""
+            # Write row result to output_results/<output.csv>
             output_file_path = "{}/output_results/{}".format(cwd, output_csv_file)
             with open(output_file_path, "a", newline='') as output_file:
                 writer = csv.writer(output_file, dialect="excel")
@@ -122,8 +127,10 @@ def main():
     input_csv_file = input("Enter CSV input file ----> ")
     print("Output files will be saved under `output_results/` folder")
     output_csv_file = input("Enter full name and file extension for output file ----> ")
+    print("Which environment in your config file do you want to testing in?")
+    environment = input("Enter config environment you wish to test in ----> ")
 
-    verify_tiers(input_csv_file, output_csv_file)
+    verify_tiers(input_csv_file, output_csv_file, environment)
 
 if __name__ == "__main__":
     main()
