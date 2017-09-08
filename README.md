@@ -30,12 +30,14 @@ It will first prompt for the `input CSV file`, this is the file that you want to
 
 The second prompt will ask for the `output CSV file` name and full extension. No need to create this file before running the script, just provide a name, EX: `test_output.csv`, and it will be saved under the `output_results/` folder.
 
+The third and final prompt will ask for the environment you want to test in, which is set in the config file. See `config.example.py` to set up properly.
+
 #### File Structure
 
 ```
 verify_tiers
-├── config.example.py
-├── config.py                   # actual config file used to run script
+├── config.example.py           # config template
+├── config.py                   # config file used to run script
 ├── input_csv_files
 │   └── example_input.csv       # put CSV file to test here
 ├── output_results

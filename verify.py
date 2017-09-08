@@ -82,8 +82,6 @@ def verify_tiers(input_csv_file, output_csv_file, environment):
     with open(input_file_path, "r") as file:
         reader = csv.reader(file, dialect="excel")
         for i, line in enumerate(reader, start=1):
-            line = line[0].split('\t')
-
             # Line read from CSV file
             print("Line [{}] : {}".format(i, line))
 
@@ -127,7 +125,7 @@ def main():
     input_csv_file = input("Enter CSV input file ----> ")
     print("Output files will be saved under `output_results/` folder")
     output_csv_file = input("Enter full name and file extension for output file ----> ")
-    print("Which environment in your config file do you want to testing in?")
+    print("Which environment in your config file do you want to test in?")
     environment = input("Enter config environment you wish to test in ----> ")
 
     verify_tiers(input_csv_file, output_csv_file, environment)
