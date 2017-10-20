@@ -12,8 +12,8 @@ URL = {
 }
 
 
-def get_data_from_api(account_number, account_type):
-    url = "{}/{}:{}".format(URL["staging"], account_type, account_number)
+def get_data_from_api(account_number, account_type, environment):
+    url = "{}/{}:{}".format(URL[environment], account_type, account_number)
     return requests.get(url)
 
 API_CALL = get_data_from_api
